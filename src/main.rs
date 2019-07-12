@@ -243,7 +243,7 @@ fn main()
     let mut images: Vec<self::archive::ImagePage> = vec![];
     println!("Archive: {}", archive_name);
     println!("Loading images …");
-    self::archive::load_images(archive_name, &mut images);
+    let tmp_dir = self::archive::load_images(archive_name, &mut images);
     println!("Loading images ✓");
 
     for image in &images {

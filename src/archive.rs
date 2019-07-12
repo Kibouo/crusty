@@ -73,10 +73,12 @@ pub fn images(dir: &std::path::Path, imgs: &mut Vec<ImagePage>)
     }
 }
 
-pub fn load_images(archive_path: String, imgs: &mut Vec<ImagePage>)
+pub fn load_images(archive_path: String, imgs: &mut Vec<ImagePage>) -> tempfile::TempDir
 {
-    let expanded = expand(archive_path);
-    let dir = expanded.path();
+    let tmp_dir = expand(archive_path);
+    let dir = tmp_dir.path();
 
-    images(&dir, imgs)
+    images(&dir, imgs);
+
+    tmp_dir
 }

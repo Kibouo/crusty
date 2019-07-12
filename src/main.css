@@ -34,7 +34,7 @@
 .page {
   background-size: contain;
   background-repeat: no-repeat;
-  background: [[ my_image | image("0") ]];
+  background: var(--my_image, image("0"));
 }
 
 .help {
