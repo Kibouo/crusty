@@ -1,5 +1,4 @@
-pub fn zip_archive(archive_path: &String, dir: &mut tempfile::TempDir)
-{
+pub fn zip_archive(archive_path: &String, dir: &mut tempfile::TempDir) {
     let fname = std::path::Path::new(archive_path);
     let zipfile = std::fs::File::open(&fname).unwrap();
 
@@ -11,8 +10,7 @@ pub fn zip_archive(archive_path: &String, dir: &mut tempfile::TempDir)
     }
 }
 
-pub fn rar_archive(archive_path: String, dir: &mut tempfile::TempDir)
-{
+pub fn rar_archive(archive_path: String, dir: &mut tempfile::TempDir) {
     unrar::Archive::new(archive_path)
         .extract_to(dir.path().to_str().unwrap().to_string())
         .expect("Failed to extract rar archive")
@@ -31,8 +29,7 @@ pub fn rar_archive(archive_path: String, dir: &mut tempfile::TempDir)
     }
 }
 
-pub fn expand(archive_path: String) -> tempfile::TempDir
-{
+pub fn expand(archive_path: String) -> tempfile::TempDir {
     let mut dir = tempfile::tempdir().unwrap();
 
     // zip_archive(&archive_path, &mut dir);
@@ -41,15 +38,13 @@ pub fn expand(archive_path: String) -> tempfile::TempDir
     dir
 }
 
-pub struct ImagePage
-{
-    pub path:     String,
+pub struct ImagePage {
+    pub path: String,
     pub filename: String,
-    pub content:  Vec<u8>
+    pub content: Vec<u8>,
 }
 
-pub fn images(dir: &std::path::Path, imgs: &mut Vec<ImagePage>)
-{
+pub fn images(dir: &std::path::Path, imgs: &mut Vec<ImagePage>) {
     let mut b = true;
     let entries = walkdir::WalkDir::new(dir).sort_by(|a, b| a.path().cmp(b.path()));
 
@@ -64,17 +59,16 @@ pub fn images(dir: &std::path::Path, imgs: &mut Vec<ImagePage>)
 
             let img = std::fs::read(entry.path()).unwrap();
             let image_page = ImagePage {
-                path:     entry.path().display().to_string(),
+                path: entry.path().display().to_string(),
                 filename: entry.file_name().to_str().unwrap().to_string(),
-                content:  img
+                content: img,
             };
             imgs.push(image_page);
         }
     }
 }
 
-pub fn load_images(archive_path: String, imgs: &mut Vec<ImagePage>) -> tempfile::TempDir
-{
+pub fn load_images(archive_path: String, imgs: &mut Vec<ImagePage>) -> tempfile::TempDir {
     let tmp_dir = expand(archive_path);
     let dir = tmp_dir.path();
 

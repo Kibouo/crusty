@@ -2,37 +2,32 @@ mod archive;
 
 use azul::prelude::*;
 
-struct MyDataModel
-{
+struct MyDataModel {
     current_page: usize,
-    first_page:   String,
-    second_page:  String,
-    source:       Vec<self::archive::ImagePage>,
-    pages:        Vec<String>,
-    page_layout:  PageLayout,
-    show_help:    bool
+    first_page: String,
+    second_page: String,
+    source: Vec<self::archive::ImagePage>,
+    pages: Vec<String>,
+    page_layout: PageLayout,
+    show_help: bool,
 }
 
-impl Default for MyDataModel
-{
-    fn default() -> Self
-    {
+impl Default for MyDataModel {
+    fn default() -> Self {
         MyDataModel {
             current_page: 0,
-            first_page:   "".to_string(),
-            second_page:  "".to_string(),
-            source:       vec![],
-            pages:        vec![],
-            page_layout:  PageLayout::Book,
-            show_help:    false
+            first_page: "".to_string(),
+            second_page: "".to_string(),
+            source: vec![],
+            pages: vec![],
+            page_layout: PageLayout::Book,
+            show_help: false,
         }
     }
 }
 
-impl MyDataModel
-{
-    fn next_page(&mut self)
-    {
+impl MyDataModel {
+    fn next_page(&mut self) {
         match self.page_layout {
             PageLayout::Page => {
                 if self.current_page < self.pages.len() {
@@ -47,8 +42,7 @@ impl MyDataModel
         }
     }
 
-    fn previous_page(&mut self)
-    {
+    fn previous_page(&mut self) {
         match self.page_layout {
             PageLayout::Page => {
                 if self.current_page > 0 {
@@ -63,28 +57,26 @@ impl MyDataModel
         }
     }
 
-    fn toggle_help(&mut self) { self.show_help = !self.show_help; }
+    fn toggle_help(&mut self) {
+        self.show_help = !self.show_help;
+    }
 }
 
-enum PageLayout
-{
+enum PageLayout {
     Page,
-    Book
+    Book,
 }
 
-impl PageLayout
-{
-    fn toggle(&self) -> PageLayout
-    {
+impl PageLayout {
+    fn toggle(&self) -> PageLayout {
         match *self {
             PageLayout::Book => PageLayout::Page,
-            PageLayout::Page => PageLayout::Book
+            PageLayout::Page => PageLayout::Book,
         }
     }
 }
 
-fn update_keyboard(info: CallbackInfo<MyDataModel>) -> UpdateScreen
-{
+fn update_keyboard(info: CallbackInfo<MyDataModel>) -> UpdateScreen {
     let app_state = info.state;
     let keyboard = app_state.windows[info.window_id].state.get_keyboard_state();
 
@@ -116,7 +108,7 @@ fn update_keyboard(info: CallbackInfo<MyDataModel>) -> UpdateScreen
         'h' => {
             data.toggle_help();
         }
-        _ => redraw = DontRedraw
+        _ => redraw = DontRedraw,
     };
 
     let image: &self::archive::ImagePage = data.source.get(data.current_page).unwrap();
@@ -126,7 +118,7 @@ fn update_keyboard(info: CallbackInfo<MyDataModel>) -> UpdateScreen
             .add_css_image_id(image.filename.to_owned());
         app_state.resources.add_image_source(
             image_id,
-            ImageSource::File(std::path::PathBuf::from(&image.path))
+            ImageSource::File(std::path::PathBuf::from(&image.path)),
         )
     };
     data.first_page = image.filename.to_string();
@@ -140,7 +132,7 @@ fn update_keyboard(info: CallbackInfo<MyDataModel>) -> UpdateScreen
                 .add_css_image_id(second_image.filename.to_owned());
             app_state.resources.add_image_source(
                 image_id,
-                ImageSource::File(std::path::PathBuf::from(&image.path))
+                ImageSource::File(std::path::PathBuf::from(&image.path)),
             )
         };
         data.second_page = second_image.filename.to_string();
@@ -149,15 +141,13 @@ fn update_keyboard(info: CallbackInfo<MyDataModel>) -> UpdateScreen
     redraw
 }
 
-impl Layout for MyDataModel
-{
-    fn layout(&self, info: LayoutInfo<Self>) -> Dom<Self>
-    {
+impl Layout for MyDataModel {
+    fn layout(&self, info: LayoutInfo<Self>) -> Dom<Self> {
         let mut dom = Dom::new(NodeType::Div)
             .with_class("comic-book")
             .with_callback(
                 EventFilter::Window(WindowEventFilter::VirtualKeyUp),
-                update_keyboard
+                update_keyboard,
             )
             .with_child(
                 Dom::new(NodeType::Div)
@@ -166,17 +156,17 @@ impl Layout for MyDataModel
                         "my_image",
                         CssProperty::BackgroundContent(
                             azul::css::StyleBackgroundContent::Image(CssImageId(
-                                self.first_page.to_string()
+                                self.first_page.to_string(),
                             ))
-                            .into()
-                        )
-                    )
+                            .into(),
+                        ),
+                    ),
             );
 
         if self.show_help {
             dom.add_child(Dom::div().with_class("help").with_child(Dom::label(
                 "Shortcuts:\n- n, left arrow: next page(s)\n- p, right arrow: previous page(s)\n- \
-                 h: help screen"
+                 h: help screen",
             )))
         }
 
@@ -188,11 +178,11 @@ impl Layout for MyDataModel
                         "my_image",
                         CssProperty::BackgroundContent(
                             azul::css::StyleBackgroundContent::Image(CssImageId(
-                                self.second_page.to_string()
+                                self.second_page.to_string(),
                             ))
-                            .into()
-                        )
-                    )
+                            .into(),
+                        ),
+                    ),
             );
         };
 
@@ -209,12 +199,11 @@ impl Layout for MyDataModel
             }
         }
 
-        return dom
+        return dom;
     }
 }
 
-fn main()
-{
+fn main() {
     macro_rules! CSS_PATH {
         () => {
             concat!(env!("CARGO_MANIFEST_DIR"), "/src/main.css")
@@ -233,8 +222,7 @@ fn main()
                 std::process::exit(0);
             }
         }
-    }
-    else {
+    } else {
         eprintln!("No argument passed.");
         std::process::exit(0);
     }
